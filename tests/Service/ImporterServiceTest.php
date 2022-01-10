@@ -5,6 +5,7 @@ namespace App\Tests\Service;
 use App\Importer\Denormalizer\DiscontinuedDenormalizer;
 use App\Importer\Reader\CsvReader;
 use App\Importer\Result\FailedItem;
+use App\Service\ImporterReaderLocator;
 use App\Service\ImporterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -29,6 +30,7 @@ class ImporterServiceTest extends KernelTestCase
         $container = static::getContainer();
         $em = $container->get(EntityManagerInterface::class);
         $validator = $container->get(ValidatorInterface::class);
+        $readerLocator = $container->get(ImporterReaderLocator::class);
         
         $filename = $this->createTempCsvFile($this->getValidCsvContent());
         $serializer = new Serializer([
@@ -36,20 +38,20 @@ class ImporterServiceTest extends KernelTestCase
             new ObjectNormalizer(null, null, null, new ReflectionExtractor())
         ]);
         
-        $importerService = new ImporterService($em, $validator);
-        $result = $importerService->importFromCsv($filename, \App\Entity\Product::class, $serializer, [
-            CsvReader::OPTION_HEADERS => ['strProductCode','strProductName','strProductDesc','intStock','numCost','dtmDiscontinued'],
+        $importerService = new ImporterService($em, $validator, $readerLocator);
+        $result = $importerService->import($filename, CsvReader::getFormat(), \App\Entity\Product::class, $serializer, [
+            CsvReader::OPTION_HEADERS => ['code','name','description','stock','cost','discontinued'],
             ImporterService::OPTION_VALIDATION_GROUPS => ['import']
         ]);
 
-        $this->assertTrue($result->getProcessedItemsCount() === 6);
-        $this->assertTrue($result->getSucceedItemCount() === 2);
-        $this->assertTrue($result->getFailedItemsCount() === 4);
+        $this->assertSame(6, $result->getProcessedItemsCount());
+        $this->assertSame(2, $result->getSucceedItemCount());
+        $this->assertSame(4, $result->getFailedItemsCount());
         $this->assertCount(4, $result->getFailedItems());
-        $this->assertTrue($result->getFailedItems()[0]->getType() === FailedItem::PROCESS_ERROR);
-        $this->assertTrue($result->getFailedItems()[1]->getType() === FailedItem::PROCESS_ERROR);
-        $this->assertTrue($result->getFailedItems()[2]->getType() === FailedItem::VALIDATION_ERROR);
-        $this->assertTrue($result->getFailedItems()[3]->getType() === FailedItem::VALIDATION_ERROR);
+        $this->assertSame(FailedItem::PROCESS_ERROR, $result->getFailedItems()[0]->getType());
+        $this->assertSame(FailedItem::PROCESS_ERROR, $result->getFailedItems()[1]->getType());
+        $this->assertSame(FailedItem::VALIDATION_ERROR, $result->getFailedItems()[2]->getType());
+        $this->assertSame(FailedItem::VALIDATION_ERROR, $result->getFailedItems()[3]->getType());
     }
 
     /**

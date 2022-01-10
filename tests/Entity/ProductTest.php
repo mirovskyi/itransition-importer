@@ -12,8 +12,8 @@ class ProductTest extends TestCase
     public function testIsCostAndStockNotValidWhenLess(): void
     {
         $product = new Product();
-        $product->setNumCost(3);
-        $product->setIntStock(5);
+        $product->setCost(3);
+        $product->setStock(5);
         $this->assertTrue($product->isCostAndStockNotValid());
     }
 
@@ -23,8 +23,8 @@ class ProductTest extends TestCase
     public function testIsCostAndStockNotValidWhenEqual(): void
     {
         $product = new Product();
-        $product->setNumCost(5);
-        $product->setIntStock(10);
+        $product->setCost(5);
+        $product->setStock(10);
         $this->assertFalse($product->isCostAndStockNotValid());
     }
 
@@ -34,8 +34,8 @@ class ProductTest extends TestCase
     public function testIsCostAndStockNotValidWhenGreater(): void
     {
         $product = new Product();
-        $product->setNumCost(123);
-        $product->setIntStock(21);
+        $product->setCost(123);
+        $product->setStock(21);
         $this->assertFalse($product->isCostAndStockNotValid());
     }
 
@@ -45,8 +45,8 @@ class ProductTest extends TestCase
     public function testIsCostAndStockNotValidWhenCostLessAndStockGreater(): void
     {
         $product = new Product();
-        $product->setNumCost(3);
-        $product->setIntStock(12);
+        $product->setCost(3);
+        $product->setStock(12);
         $this->assertFalse($product->isCostAndStockNotValid());
     }
 
@@ -56,8 +56,8 @@ class ProductTest extends TestCase
     public function testIsCostAndStockNotValidWhenCostGreaterAndStockLess(): void
     {
         $product = new Product();
-        $product->setNumCost(23);
-        $product->setIntStock(7);
+        $product->setCost(23);
+        $product->setStock(7);
         $this->assertFalse($product->isCostAndStockNotValid());
     }
 }

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Importer\Reader;
 
 /**
@@ -8,20 +10,29 @@ namespace App\Importer\Reader;
 interface ReaderInterface
 {
     /**
+     * Get supported format name
+     * 
+     * @return string
+     */
+    public static function getFormat(): string;
+    
+    /**
      * Reader context configuration
      *
      * @param array $options
      *   Configuration options
      */
     public function configure(array $options): void;
-    
+
     /**
      * Run loading data process.
      * For example creating file resource for file readers or executing SQL expression for DB readers.
      *
+     * @param mixed $source Source from where data must be loaded
+     * 
      * @throws ReaderException
      */
-    public function load(): void;
+    public function load($source): void;
 
     /**
      * Iterate throw loaded data items

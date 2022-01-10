@@ -1,27 +1,31 @@
 <?php
-namespace App\Importer\Reader;
+declare(strict_types=1);
 
-use App\Importer\Result;
+namespace App\Importer\Reader;
 
 class CsvReader extends FileReader
 {
     /**
+     * @inheritdoc 
+     */
+    protected const SUPPORTED_FORMAT = 'csv';
+    
+    /**
      * Available options for CSV reader
      */
-    public const OPTION_DELIMITER       = 'delimiter';
-    public const OPTION_ENCLOSURE       = 'enclosure';
-    public const OPTION_ESCAPE          = 'escape';
-    public const OPTION_HEADERS         = 'headers';
-    public const OPTION_NO_HEADERS      = 'noHeaders';
-    public const OPTION_SKIP_EMPTY_ROWS = 'skipEmptyRows';
+    public const OPTION_DELIMITER       = 'csvDelimiter';
+    public const OPTION_ENCLOSURE       = 'csvEnclosure';
+    public const OPTION_ESCAPE          = 'csvEscape';
+    public const OPTION_HEADERS         = 'csvHeaders';
+    public const OPTION_NO_HEADERS      = 'csvNoHeaders';
+    public const OPTION_SKIP_EMPTY_ROWS = 'csvSkipEmptyRows';
     
     private const UTF8_BOM = "\xEF\xBB\xBF";
 
     /**
      * Default options
-     * @var array 
      */
-    private array $options = [
+    private const DEFAULT_OPTIONS = [
         self::OPTION_DELIMITER       => ',',
         self::OPTION_ENCLOSURE       => '"',
         self::OPTION_ESCAPE          => '\\',
@@ -31,20 +35,10 @@ class CsvReader extends FileReader
     ];
 
     /**
-     * @var Result|null 
+     * Context options
+     * @var array 
      */
-    private ?Result $importerResult;
-
-    /**
-     * CsvReader constructor.
-     * @param string $filename
-     * @param Result|null $result
-     */
-    public function __construct(string $filename, ?Result $result = null)
-    {
-        parent::__construct($filename);
-        $this->importerResult = $result;
-    }
+    private array $options = self::DEFAULT_OPTIONS;
 
     /**
      * @inheritDoc
@@ -53,10 +47,13 @@ class CsvReader extends FileReader
      */
     public function configure(array $options): void
     {
-        $this->options = array_merge($this->options, $options);
+        $this->options = array_merge(self::DEFAULT_OPTIONS, $options);
+        if (is_string($this->options[self::OPTION_HEADERS])) {
+            $this->options[self::OPTION_HEADERS] = explode(',', $this->options[self::OPTION_HEADERS]);
+        }
         if (!is_array($this->options[self::OPTION_HEADERS])) {
             throw new ReaderException('headers option for CSV reader should be array type');
-        } 
+        }
     }
 
     /**
@@ -87,6 +84,7 @@ class CsvReader extends FileReader
         
         //Read each line and yield simple array of values
         while ($row = $this->getFile()->fgetcsv($delimiter, $enclosure, $escape)) {
+            $error = null;
             //Skip empty row
             if ($this->options[self::OPTION_SKIP_EMPTY_ROWS] && count(array_filter($row, fn($val) => !empty(trim($val)))) == 0) {
                 $index++;
@@ -95,16 +93,12 @@ class CsvReader extends FileReader
             //Map row values with headers
             if (!empty($headers)) {
                 if (count($headers) !== count($row)) {
-                    if ($this->importerResult) {
-                        $this->importerResult->exceptionError(new ReaderException('Wrong columns count in the row'), new Item($index, $row));
-                        $this->importerResult->processed();
-                    }
-                    $index++;
-                    continue;
+                    $error = 'Wrong columns count in the row';
+                } else {
+                    $row = array_combine($headers, $row);
                 }
-                $row = array_combine($headers, $row);
             }
-            yield new Item($index++, $row);
+            yield new Item($index++, $row, $error);
         }
     }
 }

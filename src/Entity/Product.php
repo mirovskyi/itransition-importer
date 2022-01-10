@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -13,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
  * 
- * @UniqueEntity("strProductCode", groups={"Default","import"})
+ * @UniqueEntity("code", groups={"Default","import"})
  */
 class Product
 {
@@ -24,7 +25,7 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private int $intProductDataId;
+    private int $id;
 
     /**
      * @var string
@@ -33,14 +34,14 @@ class Product
      * 
      * @Assert\NotBlank(groups={"Default","import"})
      */
-    private string $strProductName;
+    private string $name;
 
     /**
      * @var string
      *
      * @ORM\Column(name="strProductDesc", type="string", length=255, nullable=false)
      */
-    private string $strProductDesc;
+    private string $description;
 
     /**
      * @var string
@@ -49,28 +50,28 @@ class Product
      * 
      * @Assert\NotBlank(groups={"Default","import"})
      */
-    private string $strProductCode;
+    private string $code;
 
     /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="dtmAdded", type="datetime", nullable=true)
      */
-    private ?\DateTime $dtmAdded;
+    private ?\DateTime $added;
 
     /**
      * @var \DateTime|null
      *
      * @ORM\Column(name="dtmDiscontinued", type="datetime", nullable=true)
      */
-    private ?\DateTime $dtmDiscontinued;
+    private ?\DateTime $discontinued;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="stmTimestamp", type="datetime", nullable=false, columnDefinition="timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
      */
-    private \DateTime $stmTimestamp;
+    private \DateTime $timestamp;
 
     /**
      * @var int|null
@@ -79,7 +80,7 @@ class Product
      * 
      * @Assert\NotBlank(groups={"import"})
      */
-    private ?int $intStock;
+    private ?int $stock;
 
     /**
      * @var float|null
@@ -89,150 +90,150 @@ class Product
      * @Assert\NotBlank(groups={"import"})
      * @Assert\LessThanOrEqual(value="1000", groups={"import"})
      */
-    private ?float $numCost;
+    private ?float $cost;
 
     /**
      * @return int
      */
-    public function getIntProductDataId(): int
+    public function getId(): int
     {
-        return $this->intProductDataId;
+        return $this->id;
     }
 
     /**
-     * @param int $intProductDataId
+     * @param int $id
      */
-    public function setIntProductDataId(int $intProductDataId): void
+    public function setId(int $id): void
     {
-        $this->intProductDataId = $intProductDataId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStrProductName(): string
-    {
-        return $this->strProductName;
-    }
-
-    /**
-     * @param string $strProductName
-     */
-    public function setStrProductName(string $strProductName): void
-    {
-        $this->strProductName = $strProductName;
+        $this->id = $id;
     }
 
     /**
      * @return string
      */
-    public function getStrProductDesc(): string
+    public function getName(): string
     {
-        return $this->strProductDesc;
+        return $this->name;
     }
 
     /**
-     * @param string $strProductDesc
+     * @param string $name
      */
-    public function setStrProductDesc(string $strProductDesc): void
+    public function setName(string $name): void
     {
-        $this->strProductDesc = $strProductDesc;
+        $this->name = $name;
     }
 
     /**
      * @return string
      */
-    public function getStrProductCode(): string
+    public function getDescription(): string
     {
-        return $this->strProductCode;
+        return $this->description;
     }
 
     /**
-     * @param string $strProductCode
+     * @param string $description
      */
-    public function setStrProductCode(string $strProductCode): void
+    public function setDescription(string $description): void
     {
-        $this->strProductCode = $strProductCode;
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    /**
+     * @param string $code
+     */
+    public function setCode(string $code): void
+    {
+        $this->code = $code;
     }
 
     /**
      * @return \DateTime|null
      */
-    public function getDtmAdded(): ?\DateTime
+    public function getAdded(): ?\DateTime
     {
-        return $this->dtmAdded;
+        return $this->added;
     }
 
     /**
-     * @param \DateTime|null $dtmAdded
+     * @param \DateTime|null $added
      */
-    public function setDtmAdded(?\DateTime $dtmAdded): void
+    public function setAdded(?\DateTime $added): void
     {
-        $this->dtmAdded = $dtmAdded;
+        $this->added = $added;
     }
 
     /**
      * @return \DateTime|null
      */
-    public function getDtmDiscontinued(): ?\DateTime
+    public function getDiscontinued(): ?\DateTime
     {
-        return $this->dtmDiscontinued;
+        return $this->discontinued;
     }
 
     /**
-     * @param \DateTime|null $dtmDiscontinued
+     * @param \DateTime|null $discontinued
      */
-    public function setDtmDiscontinued(?\DateTime $dtmDiscontinued): void
+    public function setDiscontinued(?\DateTime $discontinued): void
     {
-        $this->dtmDiscontinued = $dtmDiscontinued;
+        $this->discontinued = $discontinued;
     }
 
     /**
      * @return \DateTime
      */
-    public function getStmTimestamp(): \DateTime
+    public function getTimestamp(): \DateTime
     {
-        return $this->stmTimestamp;
+        return $this->timestamp;
     }
 
     /**
-     * @param \DateTime $stmTimestamp
+     * @param \DateTime $timestamp
      */
-    public function setStmTimestamp(\DateTime $stmTimestamp): void
+    public function setTimestamp(\DateTime $timestamp): void
     {
-        $this->stmTimestamp = $stmTimestamp;
+        $this->timestamp = $timestamp;
     }
 
     /**
      * @return int|null
      */
-    public function getIntStock(): ?int
+    public function getStock(): ?int
     {
-        return $this->intStock;
+        return $this->stock;
     }
 
     /**
-     * @param int|null $intStock
+     * @param int|null $stock
      */
-    public function setIntStock(?int $intStock): void
+    public function setStock(?int $stock): void
     {
-        $this->intStock = $intStock;
+        $this->stock = $stock;
     }
 
     /**
      * @return float|null
      */
-    public function getNumCost(): ?float
+    public function getCost(): ?float
     {
-        return $this->numCost;
+        return $this->cost;
     }
 
     /**
-     * @param float|null $numCost
+     * @param float|null $cost
      */
-    public function setNumCost(?float $numCost): void
+    public function setCost(?float $cost): void
     {
-        $this->numCost = $numCost;
+        $this->cost = $cost;
     }
 
     /**
@@ -241,8 +242,8 @@ class Product
     public function prePersist() 
     {
         $currentDate = new \DateTime();
-        $this->dtmAdded = $currentDate;
-        $this->stmTimestamp = $currentDate;
+        $this->added = $currentDate;
+        $this->timestamp = $currentDate;
     }
 
     /**
@@ -250,7 +251,7 @@ class Product
      */
     public function preUpdate()
     {
-        $this->stmTimestamp = new \DateTime();
+        $this->timestamp = new \DateTime();
     }
 
     /**
@@ -260,6 +261,6 @@ class Product
      */
     public function isCostAndStockNotValid()
     {
-        return $this->getNumCost() < 5 && $this->getIntStock() < 10;
+        return $this->getCost() < 5 && $this->getStock() < 10;
     }
 }

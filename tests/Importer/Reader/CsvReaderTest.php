@@ -27,8 +27,8 @@ class CsvReaderTest extends TestCase
     public function testValidCsvWithHeaders(): void
     {
         $filename = $this->createTempCsvFile($this->getValidCsvContent());
-        $reader = new CsvReader($filename);
-        $reader->load();
+        $reader = new CsvReader();
+        $reader->load($filename);
         $data = [];
         foreach ($reader->read() as $item) {
             $data[] = $item->getData();
@@ -49,9 +49,9 @@ class CsvReaderTest extends TestCase
     public function testValidCsvWithHeadersOverride(): void
     {
         $filename = $this->createTempCsvFile($this->getValidCsvContent());
-        $reader = new CsvReader($filename);
+        $reader = new CsvReader();
         $reader->configure([CsvReader::OPTION_HEADERS => ['h1','h2','h3']]);
-        $reader->load();
+        $reader->load($filename);
         $data = [];
         foreach ($reader->read() as $item) {
             $data[] = $item->getData();
@@ -72,9 +72,9 @@ class CsvReaderTest extends TestCase
     public function testValidCsvWithoutHeaders(): void
     {
         $filename = $this->createTempCsvFile($this->getValidCsvContent());
-        $reader = new CsvReader($filename);
+        $reader = new CsvReader();
         $reader->configure([CsvReader::OPTION_NO_HEADERS => true]);
-        $reader->load();
+        $reader->load($filename);
         $data = [];
         foreach ($reader->read() as $item) {
             $data[] = $item->getData();
@@ -96,19 +96,21 @@ class CsvReaderTest extends TestCase
     public function testInconsistencyBetweenHeadersAndContent(): void
     {
         $filename = $this->createTempCsvFile($this->getValidCsvContent());
-        $result = new Result();
-        $reader = new CsvReader($filename, $result);
+        $reader = new CsvReader();
         $reader->configure([CsvReader::OPTION_HEADERS => ['h1','h2','h3','h4']]);
-        $reader->load();
-        $data = [];
+        $reader->load($filename);
+        $items = [];
+        $errors = [];
+        /** @var \App\Importer\Reader\Item $item */
         foreach ($reader->read() as $item) {
-            $data[] = $item->getData();
+            $items[] = $item;
+            if (!$item->isSuccess()) {
+                $errors[] = $item->getError();
+            }
         }
-        $this->assertTrue($result->getFailedItemsCount() === 2);
-        $this->assertTrue($result->getSucceedItemCount() === 0);
-        $this->assertCount(0, $data);
-        $this->assertContains('Wrong columns count in the row', $result->getFailedItems()[0]->getMessages());
-        $this->assertContains('Wrong columns count in the row', $result->getFailedItems()[1]->getMessages());
+        $this->assertCount(2, $errors);
+        $this->assertSame('Wrong columns count in the row', $errors[0]);
+        $this->assertSame('Wrong columns count in the row', $errors[1]);
         unlink($filename);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Importer\Reader;
 
+use App\Importer\Reader\ReaderInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -13,8 +14,8 @@ class FileReaderTest extends TestCase
      */
     public function testLoadExistingFile(): void
     {
-        $reader = $this->createMockedInstance(__FILE__);
-        $reader->load();
+        $reader = $this->createMockedInstance();
+        $reader->load(__FILE__);
         //Needs Reflection API to call protected method
         $reflection = new \ReflectionObject($reader);
         $method = $reflection->getMethod('getFile');
@@ -29,8 +30,8 @@ class FileReaderTest extends TestCase
     {
         $this->expectException(\App\Importer\Reader\ReaderException::class);
         $this->expectExceptionMessage('File does not exists notExistingFilename');
-        $reader = $this->createMockedInstance('notExistingFilename');
-        $reader->load();
+        $reader = $this->createMockedInstance();
+        $reader->load('notExistingFilename');
     }
 
     /**
@@ -40,17 +41,17 @@ class FileReaderTest extends TestCase
     {
         $this->expectException(\App\Importer\Reader\ReaderException::class);
         $this->expectExceptionMessage('Given path \'' . __DIR__ . '\' is directory');
-        $reader = $this->createMockedInstance(__DIR__);
-        $reader->load();
+        $reader = $this->createMockedInstance();
+        $reader->load(__DIR__);
     }
 
     /**
      * Create mocked instance of abstract FileReader class
-     * @param string $filename
-     * @return MockObject
+     * 
+     * @return MockObject|ReaderInterface
      */
-    private function createMockedInstance(string $filename): MockObject
+    private function createMockedInstance(): MockObject
     {
-        return $this->getMockForAbstractClass(\App\Importer\Reader\FileReader::class, [$filename]);
+        return $this->getMockForAbstractClass(\App\Importer\Reader\FileReader::class);
     }
 }

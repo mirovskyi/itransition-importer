@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Importer\Reader;
 
 class Item
@@ -14,14 +16,21 @@ class Item
     private int $index;
 
     /**
+     * @var string|null 
+     */
+    private ?string $error;
+
+    /**
      * Item constructor.
      * @param int $index
-     * @param $data
+     * @param mixed $data
+     * @param string|null $error
      */
-    public function __construct(int $index, $data) 
+    public function __construct(int $index, $data, ?string $error) 
     {
         $this->index = $index;
         $this->data = $data;
+        $this->error = $error;
     }
 
     /**
@@ -54,5 +63,31 @@ class Item
     public function setIndex(int $index): void
     {
         $this->index = $index;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getError(): ?string
+    {
+        return $this->error;
+    }
+
+    /**
+     * @param string|null $error
+     */
+    public function setError(?string $error): void
+    {
+        $this->error = $error;
+    }
+
+    /**
+     * Is item read successfully
+     * 
+     * @return bool
+     */
+    public function isSuccess(): bool
+    {
+        return $this->error === null;
     }
 }

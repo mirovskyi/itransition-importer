@@ -1,44 +1,34 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Importer\Reader;
 
-abstract class FileReader implements ReaderInterface
+abstract class FileReader extends AbstractReader
 {
     /**
      * Loaded file SPL object
      * @var \SplFileObject
      */
     private \SplFileObject $splFileObject;
-
-    /**
-     * Path to file to be loaded
-     * @var string
-     */
-    private string $filename;
-
-    /**
-     * FileReader constructor.
-     * 
-     * @param string $filename Path to the file
-     */
-    public function __construct(string $filename)
-    {
-        $this->filename = $filename;
-    }
     
     /**
      * @inheritDoc
      */
-    public function load(): void
+    public function load($source): void
     {
+        if ($source instanceof \SplFileObject) {
+            $this->splFileObject = $source;
+            return;
+        }
         try {
-            $this->splFileObject = new \SplFileObject($this->filename);
+            $this->splFileObject = new \SplFileObject($source);
         } catch (\RuntimeException $re) {
-            if (file_exists($this->filename)) {
-                throw new ReaderException("Can't open file " . $this->filename);
+            if (file_exists($source)) {
+                throw new ReaderException("Can't open file " . $source);
             }
-            throw new ReaderException("File does not exists " . $this->filename);
+            throw new ReaderException("File does not exists " . $source);
         } catch (\LogicException $le) {
-            throw new ReaderException("Given path '" . $this->filename . "' is directory");
+            throw new ReaderException("Given path '" . $source . "' is directory");
         }
     }
 

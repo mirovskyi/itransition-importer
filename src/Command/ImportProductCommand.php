@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Importer\Denormalizer\DiscontinuedDenormalizer;
@@ -51,11 +53,12 @@ class ImportProductCommand extends Command
     protected function configure(): void
     {
         $this->addArgument('source', InputArgument::REQUIRED, 'Path to source file to be imported');
-        $this->addArgument(CsvReader::OPTION_HEADERS, InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
+        $this->addOption('format', 'f', InputArgument::OPTIONAL, 'Source data format', CsvReader::getFormat());
+        $this->addOption(CsvReader::OPTION_HEADERS, null, InputOption::VALUE_OPTIONAL,
             'Force headers list (coma separated). Will skip original headers in the file',
-            ['strProductCode', 'strProductName', 'strProductDesc', 'intStock', 'numCost', 'dtmDiscontinued']);
+            ['code', 'name', 'description', 'stock', 'cost', 'discontinued']);
         $this->addOption(WriterInterface::OPTION_TEST_MODE, 't', InputOption::VALUE_NONE, 'Run in test mode (don\'t store data to the database)');
-        $this->addOption(CsvReader::OPTION_DELIMITER, 'd', InputOption::VALUE_OPTIONAL, 'CSV delimiter character', ',');
+        $this->addOption(CsvReader::OPTION_DELIMITER, null, InputOption::VALUE_OPTIONAL, 'CSV delimiter character', ',');
         $this->addOption(CsvReader::OPTION_ENCLOSURE, null, InputOption::VALUE_OPTIONAL, 'CSV enclosure character (value wrapper)', '"');
         $this->addOption(CsvReader::OPTION_ESCAPE, null, InputOption::VALUE_OPTIONAL, 'CSV escape character', '\\');
         $this->addOption(CsvReader::OPTION_NO_HEADERS, null, InputOption::VALUE_NONE, 'If there is no headers in CSV file');
@@ -76,8 +79,12 @@ class ImportProductCommand extends Command
 
         $section = $output->section();
         $section->writeln("Importing...");
-        $result = $this->importerService->importFromCsv(
-            $input->getArgument('source'), \App\Entity\Product::class, $serializer, array_merge($input->getArguments(), $input->getOptions())
+        $result = $this->importerService->import(
+            $input->getArgument('source'), 
+            $input->getOption('format'), 
+            \App\Entity\Product::class, 
+            $serializer, 
+            array_merge($input->getArguments(), $input->getOptions())
         );
         $section->clear();
 
