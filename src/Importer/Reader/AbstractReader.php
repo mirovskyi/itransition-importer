@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Importer\Reader;
@@ -6,12 +7,12 @@ namespace App\Importer\Reader;
 abstract class AbstractReader implements ReaderInterface
 {
     /**
-     * Supported reader format
+     * Supported reader format.
      */
     protected const SUPPORTED_FORMAT = 'unknown';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public static function getFormat(): string
     {

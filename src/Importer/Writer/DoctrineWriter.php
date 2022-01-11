@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Importer\Writer;
@@ -7,26 +8,17 @@ use Doctrine\Persistence\ObjectManager;
 
 class DoctrineWriter implements WriterInterface
 {
-    /**
-     * @var ObjectManager 
-     */
     private ObjectManager $entityManagement;
 
-    /**
-     * @var bool 
-     */
     private bool $testMode = false;
 
-    /**
-     * @param ObjectManager $entityManager
-     */
     public function __construct(ObjectManager $entityManager)
     {
         $this->entityManagement = $entityManager;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function configure(array $options): void
     {
@@ -36,7 +28,7 @@ class DoctrineWriter implements WriterInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function write(object $item): void
     {
@@ -46,7 +38,7 @@ class DoctrineWriter implements WriterInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function finish(): void
     {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Importer;
@@ -12,43 +13,30 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 class Result
 {
     /**
-     * Count of processed items
-     * @var int 
+     * Count of processed items.
      */
     private int $processed = 0;
 
     /**
-     * List of failed items
-     * @var array<FailedItem> 
+     * List of failed items.
+     *
+     * @var array<FailedItem>
      */
     private array $failedItems = [];
 
     /**
-     * @var ConstraintViolationListNormalizer 
-     */
-    private ConstraintViolationListNormalizer $constraintViolationListNormalizer;
-
-    /**
-     * Result constructor.
-     */
-    public function __construct()
-    {
-        $this->constraintViolationListNormalizer = new ConstraintViolationListNormalizer();
-    }
-
-    /**
-     * Process next item
+     * Process next item.
      */
     public function processed(): void
     {
-        $this->processed++;
+        ++$this->processed;
     }
 
     /**
-     * Register validation error for item
+     * Register validation error for item.
      *
-     * @param ConstraintViolationListInterface $errors   List of validation constraints
-     * @param Item $item                                 Failed item data
+     * @param ConstraintViolationListInterface $errors List of validation constraints
+     * @param Item                             $item   Failed item data
      */
     public function validationError(ConstraintViolationListInterface $errors, Item $item): void
     {
@@ -57,16 +45,16 @@ class Result
         $failedItem->setItem($item);
         /** @var ConstraintViolation $error */
         foreach ($errors as $error) {
-            $failedItem->addMessage($error->getPropertyPath() . ': ' . $error->getMessage());
+            $failedItem->addMessage($error->getPropertyPath().': '.$error->getMessage());
         }
         $this->failedItems[] = $failedItem;
     }
 
     /**
-     * Register error for the item 
-     * 
+     * Register error for the item.
+     *
      * @param \Throwable $exception Exception object
-     * @param Item $item            Failed item data
+     * @param Item       $item      Failed item data
      */
     public function exceptionError(\Throwable $exception, Item $item): void
     {
@@ -77,25 +65,16 @@ class Result
         $this->failedItems[] = $failedItem;
     }
 
-    /**
-     * @return int
-     */
-    public function getProcessedItemsCount():int
+    public function getProcessedItemsCount(): int
     {
         return $this->processed;
     }
 
-    /**
-     * @return int
-     */
     public function getFailedItemsCount(): int
     {
         return count($this->failedItems);
     }
 
-    /**
-     * @return int
-     */
     public function getSucceedItemCount(): int
     {
         return $this->getProcessedItemsCount() - $this->getFailedItemsCount();

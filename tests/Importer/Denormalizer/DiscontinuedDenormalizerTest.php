@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Importer\Denormalizer;
 
 use App\Importer\Denormalizer\DiscontinuedDenormalizer;
@@ -8,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 class DiscontinuedDenormalizerTest extends TestCase
 {
     /**
-     * Test supported data types for DiscontinuedDenormalizer, with valid data type
+     * Test supported data types for DiscontinuedDenormalizer, with valid data type.
      */
     public function testSupportsDenormalizationTrue(): void
     {
@@ -19,7 +21,7 @@ class DiscontinuedDenormalizerTest extends TestCase
     }
 
     /**
-     * Test supported data types for DiscontinuedDenormalizer, with invalid data type
+     * Test supported data types for DiscontinuedDenormalizer, with invalid data type.
      */
     public function testSupportsDenormalizationFalse(): void
     {
@@ -30,7 +32,8 @@ class DiscontinuedDenormalizerTest extends TestCase
     }
 
     /**
-     * Test denormalization with valid string 'yes', should denormalize to \DateTime object with current date 
+     * Test denormalization with valid string 'yes', should denormalize to \DateTime object with current date.
+     *
      * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
     public function testDenormalizeYesString(): void
@@ -40,7 +43,8 @@ class DiscontinuedDenormalizerTest extends TestCase
     }
 
     /**
-     * Test denormalization is not case sensitive
+     * Test denormalization is not case sensitive.
+     *
      * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
     public function testDenormalizeNotCaseSensitive(): void
@@ -50,7 +54,8 @@ class DiscontinuedDenormalizerTest extends TestCase
     }
 
     /**
-     * Test denormalization with invalid string
+     * Test denormalization with invalid string.
+     *
      * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
     public function testDenormalizeInvalidValue(): void
@@ -61,7 +66,8 @@ class DiscontinuedDenormalizerTest extends TestCase
     }
 
     /**
-     * Test denormalization with valid datetime string, should run standard denormalization of DateTimeNormalizer
+     * Test denormalization with valid datetime string, should run standard denormalization of DateTimeNormalizer.
+     *
      * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
      */
     public function testDenormalizeDatetimeString(): void

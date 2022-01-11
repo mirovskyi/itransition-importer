@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Service;
 
 use App\Importer\Denormalizer\DiscontinuedDenormalizer;
@@ -17,8 +19,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ImporterServiceTest extends KernelTestCase
 {
     /**
-     * Test import process from CSV file
-     * 
+     * Test import process from CSV file.
+     *
      * @throws \App\Importer\Reader\ReaderException
      * @throws \App\Importer\Writer\WriterException
      * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
@@ -26,22 +28,22 @@ class ImporterServiceTest extends KernelTestCase
     public function testCsvImporter(): void
     {
         self::bootKernel();
-        
+
         $container = static::getContainer();
         $em = $container->get(EntityManagerInterface::class);
         $validator = $container->get(ValidatorInterface::class);
         $readerLocator = $container->get(ImporterReaderLocator::class);
-        
+
         $filename = $this->createTempCsvFile($this->getValidCsvContent());
         $serializer = new Serializer([
             new DiscontinuedDenormalizer(),
-            new ObjectNormalizer(null, null, null, new ReflectionExtractor())
+            new ObjectNormalizer(null, null, null, new ReflectionExtractor()),
         ]);
-        
+
         $importerService = new ImporterService($em, $validator, $readerLocator);
         $result = $importerService->import($filename, CsvReader::getFormat(), \App\Entity\Product::class, $serializer, [
-            CsvReader::OPTION_HEADERS => ['code','name','description','stock','cost','discontinued'],
-            ImporterService::OPTION_VALIDATION_GROUPS => ['import']
+            CsvReader::OPTION_HEADERS => ['code', 'name', 'description', 'stock', 'cost', 'discontinued'],
+            ImporterService::OPTION_VALIDATION_GROUPS => ['import'],
         ]);
 
         $this->assertSame(6, $result->getProcessedItemsCount());
@@ -55,9 +57,7 @@ class ImporterServiceTest extends KernelTestCase
     }
 
     /**
-     * Valid CSV content with header line
-     *
-     * @return string
+     * Valid CSV content with header line.
      */
     private function getValidCsvContent(): string
     {
@@ -73,15 +73,19 @@ EOT;
     }
 
     /**
-     * Creates temp file with given content
+     * Creates temp file with given content.
      *
      * @param string $content Temp file content
      *
      * @return string Returns temp file name
+     * @throws \Exception
      */
     private function createTempCsvFile(string $content): string
     {
         $filename = tempnam(sys_get_temp_dir(), 'test');
+        if (!$filename) {
+            throw new \Exception('Failed to create temp file');
+        }
         file_put_contents($filename, $content);
 
         return $filename;

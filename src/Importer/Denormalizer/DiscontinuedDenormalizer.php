@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Importer\Denormalizer;
@@ -9,14 +10,16 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 class DiscontinuedDenormalizer implements DenormalizerInterface
 {
     private const SUPPORTED_TYPES = [
-        \DateTime::class => true
+        \DateTime::class => true,
     ];
-    
+
     /**
-     * Denormalize string 'yes' to current DateTime object
-     * 
-     * @inheritDoc
-     * 
+     * Denormalize string 'yes' to current DateTime object.
+     *
+     * {@inheritDoc}
+     *
+     * @param array<mixed> $context
+     *
      * @return mixed
      */
     public function denormalize($data, string $type, string $format = null, array $context = [])
@@ -24,18 +27,19 @@ class DiscontinuedDenormalizer implements DenormalizerInterface
         if (empty($data)) {
             return null;
         }
-        if (trim(strtolower($data)) === 'yes') {
+        if ('yes' === trim(strtolower($data))) {
             return new \DateTime();
         }
-        
+
         //Fallback to standard datetime denormalizer
         $dateTimeNormalizer = new DateTimeNormalizer();
+
         return $dateTimeNormalizer->denormalize($data, $type, $format, $context);
     }
 
     /**
-     * @inheritDoc
-     * 
+     * {@inheritDoc}
+     *
      * @return bool
      */
     public function supportsDenormalization($data, string $type, string $format = null)

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Command;
@@ -20,26 +21,23 @@ use Symfony\Component\Serializer\Serializer;
 class ImportProductCommand extends Command
 {
     /**
-     * The name of the bin/console command
+     * The name of the bin/console command.
+     *
      * @var string
      */
     protected static $defaultName = 'app:import-product';
 
     /**
-     * Command description used in the --help output
-     * @var string 
+     * Command description used in the --help output.
+     *
+     * @var string
      */
     protected static $defaultDescription = 'The command allows to import products data to the database';
 
-    /**
-     * @var ImporterService
-     */
     protected ImporterService $importerService;
 
     /**
      * ImportProductCommand constructor.
-     * @param string|null $name
-     * @param ImporterService $importerService
      */
     public function __construct(string $name = null, ImporterService $importerService)
     {
@@ -48,7 +46,7 @@ class ImportProductCommand extends Command
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function configure(): void
     {
@@ -64,36 +62,35 @@ class ImportProductCommand extends Command
         $this->addOption(CsvReader::OPTION_NO_HEADERS, null, InputOption::VALUE_NONE, 'If there is no headers in CSV file');
         $this->addOption(CsvReader::OPTION_SKIP_EMPTY_ROWS, null, InputOption::VALUE_NONE, 'Skipp empty rows');
         $this->addOption(ImporterService::OPTION_VALIDATION_GROUPS, 'g', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Groups for validation', ['import']);
-        
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $serializer = new Serializer([
             new DiscontinuedDenormalizer(),
-            new ObjectNormalizer(null, null, null, new ReflectionExtractor())
+            new ObjectNormalizer(null, null, null, new ReflectionExtractor()),
         ]);
 
         $section = $output->section();
-        $section->writeln("Importing...");
+        $section->writeln('Importing...');
         $result = $this->importerService->import(
-            $input->getArgument('source'), 
-            $input->getOption('format'), 
-            \App\Entity\Product::class, 
-            $serializer, 
+            $input->getArgument('source'),
+            $input->getOption('format'),
+            \App\Entity\Product::class,
+            $serializer,
             array_merge($input->getArguments(), $input->getOptions())
         );
         $section->clear();
 
         $output->writeln('==================================');
-        $output->writeln('Processed rows count: ' . $result->getProcessedItemsCount());
-        $output->writeln('Succeed rows count: ' . $result->getSucceedItemCount());
-        $output->writeln('Failed rows count: ' . $result->getFailedItemsCount());
+        $output->writeln('Processed rows count: '.$result->getProcessedItemsCount());
+        $output->writeln('Succeed rows count: '.$result->getSucceedItemCount());
+        $output->writeln('Failed rows count: '.$result->getFailedItemsCount());
         $output->writeln('==================================');
-        
+
         if ($result->getFailedItemsCount() > 0) {
             $output->writeln('');
             $output->writeln('ERRORS');
@@ -102,21 +99,18 @@ class ImportProductCommand extends Command
         foreach ($result->getFailedItems() as $item) {
             $this->writeFailedItem($output, $item);
         }
-        
+
         return Command::SUCCESS;
     }
 
     /**
-     * Formatting failed item and writing into the output 
-     * 
-     * @param OutputInterface $output
-     * @param FailedItem $failedItem
+     * Formatting failed item and writing into the output.
      */
     private function writeFailedItem(OutputInterface $output, FailedItem $failedItem): void
     {
-        $strType = ($failedItem->getType() === FailedItem::PROCESS_ERROR ? 'ERROR' : 'VALIDATION ERROR');
+        $strType = (FailedItem::PROCESS_ERROR === $failedItem->getType() ? 'ERROR' : 'VALIDATION ERROR');
         $line = $failedItem->getItem()->getIndex() + 1;
-        $rowMessage = "Line $line, $strType: " . implode(', ', $failedItem->getItem()->getData());
+        $rowMessage = "Line $line, $strType: ".implode(', ', $failedItem->getItem()->getData());
         $output->writeln('<comment>'.$rowMessage.'</comment>');
         foreach ($failedItem->getMessages() as $message) {
             $output->writeln('  <error>'.$message.'</error>');

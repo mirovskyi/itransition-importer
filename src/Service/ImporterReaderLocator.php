@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -9,14 +10,10 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class ImporterReaderLocator
 {
-    /**
-     * @var ServiceLocator 
-     */
     private ServiceLocator $locator;
 
     /**
      * ImporterReaderLocator constructor.
-     * @param ServiceLocator $locator
      */
     public function __construct(ServiceLocator $locator)
     {
@@ -24,11 +21,8 @@ class ImporterReaderLocator
     }
 
     /**
-     * Get reader implementation based on given format
-     * 
-     * @param string $format
-     * 
-     * @return ReaderInterface
+     * Get reader implementation based on given format.
+     *
      * @throws ImporterException
      */
     public function getReader(string $format): ReaderInterface
@@ -37,7 +31,7 @@ class ImporterReaderLocator
         if (!$this->locator->has($format)) {
             throw new ImporterException(sprintf('Reader for "%s" format was not found', $format));
         }
-        
+
         return $this->locator->get($format);
     }
 }

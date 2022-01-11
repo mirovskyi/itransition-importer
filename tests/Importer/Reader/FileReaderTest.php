@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Importer\Reader;
 
 use App\Importer\Reader\ReaderInterface;
@@ -9,7 +11,8 @@ use PHPUnit\Framework\TestCase;
 class FileReaderTest extends TestCase
 {
     /**
-     * Test loading file by correct filename
+     * Test loading file by correct filename.
+     *
      * @throws \ReflectionException
      */
     public function testLoadExistingFile(): void
@@ -24,7 +27,7 @@ class FileReaderTest extends TestCase
     }
 
     /**
-     * Test loading not existing file
+     * Test loading not existing file.
      */
     public function testLoadNotExistingFile(): void
     {
@@ -35,22 +38,22 @@ class FileReaderTest extends TestCase
     }
 
     /**
-     * Test loading directory instead file
+     * Test loading directory instead file.
      */
     public function testLoadDirectory(): void
     {
         $this->expectException(\App\Importer\Reader\ReaderException::class);
-        $this->expectExceptionMessage('Given path \'' . __DIR__ . '\' is directory');
+        $this->expectExceptionMessage('Given path \''.__DIR__.'\' is directory');
         $reader = $this->createMockedInstance();
         $reader->load(__DIR__);
     }
 
     /**
-     * Create mocked instance of abstract FileReader class
-     * 
+     * Create mocked instance of abstract FileReader class.
+     *
      * @return MockObject|ReaderInterface
      */
-    private function createMockedInstance(): MockObject
+    private function createMockedInstance()
     {
         return $this->getMockForAbstractClass(\App\Importer\Reader\FileReader::class);
     }

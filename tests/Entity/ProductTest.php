@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use PHPUnit\Framework\TestCase;
@@ -7,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class ProductTest extends TestCase
 {
     /**
-     * Check validation rules when cost < 5 and stock < 10
+     * Check validation rules when cost < 5 and stock < 10.
      */
     public function testIsCostAndStockNotValidWhenLess(): void
     {
@@ -18,7 +20,7 @@ class ProductTest extends TestCase
     }
 
     /**
-     * Check validation rules when cost = 5 and stock = 10
+     * Check validation rules when cost = 5 and stock = 10.
      */
     public function testIsCostAndStockNotValidWhenEqual(): void
     {
@@ -29,7 +31,7 @@ class ProductTest extends TestCase
     }
 
     /**
-     * Check validation rules when cost > 5 and stock > 10
+     * Check validation rules when cost > 5 and stock > 10.
      */
     public function testIsCostAndStockNotValidWhenGreater(): void
     {
@@ -40,7 +42,7 @@ class ProductTest extends TestCase
     }
 
     /**
-     * Check validation rules when cost < 5 and stock > 10
+     * Check validation rules when cost < 5 and stock > 10.
      */
     public function testIsCostAndStockNotValidWhenCostLessAndStockGreater(): void
     {
@@ -51,7 +53,7 @@ class ProductTest extends TestCase
     }
 
     /**
-     * Check validation rules when cost > 5 and stock < 10
+     * Check validation rules when cost > 5 and stock < 10.
      */
     public function testIsCostAndStockNotValidWhenCostGreaterAndStockLess(): void
     {

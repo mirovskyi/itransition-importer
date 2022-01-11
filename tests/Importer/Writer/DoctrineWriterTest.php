@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Importer\Writer;
 
 use App\Entity\Product;
@@ -12,8 +14,8 @@ use PHPUnit\Framework\TestCase;
 class DoctrineWriterTest extends TestCase
 {
     /**
-     * Test saving product data via doctrine entity manager
-     * 
+     * Test saving product data via doctrine entity manager.
+     *
      * @throws \App\Importer\Writer\WriterException
      */
     public function testCallEntityManagerMethods(): void
@@ -23,7 +25,7 @@ class DoctrineWriterTest extends TestCase
             ->method('persist');
         $em->expects($this->once())
             ->method('flush');
-        
+
         $writer = new DoctrineWriter($em);
         $writer->write(new Product());
         $writer->write(new Product());
@@ -31,8 +33,8 @@ class DoctrineWriterTest extends TestCase
     }
 
     /**
-     * Test DoctrineWriter test mode configuration
-     * 
+     * Test DoctrineWriter test mode configuration.
+     *
      * @throws \App\Importer\Writer\WriterException
      */
     public function testConfigurationWithTestMode(): void
@@ -52,7 +54,7 @@ class DoctrineWriterTest extends TestCase
     /**
      * @return MockObject|ObjectManager
      */
-    private function getMockedEntityManager(): MockObject
+    private function getMockedEntityManager()
     {
         return $this->getMockBuilder(ObjectManager::class)
             ->disableOriginalConstructor()
