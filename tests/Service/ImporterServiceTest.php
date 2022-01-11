@@ -11,7 +11,7 @@ use App\Service\ImporterReaderLocator;
 use App\Service\ImporterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -37,11 +37,11 @@ class ImporterServiceTest extends KernelTestCase
         $filename = $this->createTempCsvFile($this->getValidCsvContent());
         $serializer = new Serializer([
             new DiscontinuedDenormalizer(),
-            new ObjectNormalizer(null, null, null, new ReflectionExtractor()),
+            new ObjectNormalizer(null, null, null, new PhpDocExtractor()),
         ]);
 
         $importerService = new ImporterService($em, $validator, $readerLocator);
-        $result = $importerService->import($filename, CsvReader::getFormat(), \App\Entity\Product::class, $serializer, [
+        $result = $importerService->import($filename, CsvReader::getFormat(), \App\Model\ProductDTO::class, $serializer, [
             CsvReader::OPTION_HEADERS => ['code', 'name', 'description', 'stock', 'cost', 'discontinued'],
             ImporterService::OPTION_VALIDATION_GROUPS => ['import'],
         ]);

@@ -11,9 +11,6 @@ abstract class AbstractReader implements ReaderInterface
      */
     protected const SUPPORTED_FORMAT = 'unknown';
 
-    /**
-     * {@inheritDoc}
-     */
     public static function getFormat(): string
     {
         return static::SUPPORTED_FORMAT;

@@ -14,19 +14,11 @@ class FailedItem
     public const PROCESS_ERROR = 0;
     public const VALIDATION_ERROR = 1;
 
-    /**
-     * Failed item data.
-     */
     private Item $item;
 
-    /**
-     * Error type.
-     */
     private int $type;
 
     /**
-     * Error message.
-     *
      * @var array<string>
      */
     private array $messages = [];

@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -36,18 +36,12 @@ class ImportProductCommand extends Command
 
     protected ImporterService $importerService;
 
-    /**
-     * ImportProductCommand constructor.
-     */
     public function __construct(string $name = null, ImporterService $importerService)
     {
         parent::__construct($name);
         $this->importerService = $importerService;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function configure(): void
     {
         $this->addArgument('source', InputArgument::REQUIRED, 'Path to source file to be imported');
@@ -64,14 +58,11 @@ class ImportProductCommand extends Command
         $this->addOption(ImporterService::OPTION_VALIDATION_GROUPS, 'g', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Groups for validation', ['import']);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $serializer = new Serializer([
             new DiscontinuedDenormalizer(),
-            new ObjectNormalizer(null, null, null, new ReflectionExtractor()),
+            new ObjectNormalizer(null, null, null, new PhpDocExtractor()),
         ]);
 
         $section = $output->section();
@@ -79,7 +70,7 @@ class ImportProductCommand extends Command
         $result = $this->importerService->import(
             $input->getArgument('source'),
             $input->getOption('format'),
-            \App\Entity\Product::class,
+            \App\Model\ProductDTO::class,
             $serializer,
             array_merge($input->getArguments(), $input->getOptions())
         );

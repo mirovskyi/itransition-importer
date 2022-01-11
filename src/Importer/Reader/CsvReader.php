@@ -35,17 +35,10 @@ class CsvReader extends FileReader
         self::OPTION_SKIP_EMPTY_ROWS => false,
     ];
 
-    /**
-     * Context options.
-     * @var array<mixed>
-     */
     private array $options = self::DEFAULT_OPTIONS;
 
     /**
      * {@inheritDoc}
-     *
-     * @param array<mixed> $options
-     *
      * @throws ReaderException
      */
     public function configure(array $options): void
@@ -59,9 +52,6 @@ class CsvReader extends FileReader
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function read(): \Traversable
     {
         if (self::UTF8_BOM !== $this->getFile()->fread(strlen(self::UTF8_BOM))) {

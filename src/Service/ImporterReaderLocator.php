@@ -12,17 +12,12 @@ class ImporterReaderLocator
 {
     private ServiceLocator $locator;
 
-    /**
-     * ImporterReaderLocator constructor.
-     */
     public function __construct(ServiceLocator $locator)
     {
         $this->locator = $locator;
     }
 
     /**
-     * Get reader implementation based on given format.
-     *
      * @throws ImporterException
      */
     public function getReader(string $format): ReaderInterface

@@ -18,14 +18,12 @@ class Result
     private int $processed = 0;
 
     /**
-     * List of failed items.
-     *
      * @var array<FailedItem>
      */
     private array $failedItems = [];
 
     /**
-     * Process next item.
+     * Increments processed items.
      */
     public function processed(): void
     {
@@ -34,9 +32,6 @@ class Result
 
     /**
      * Register validation error for item.
-     *
-     * @param ConstraintViolationListInterface $errors List of validation constraints
-     * @param Item                             $item   Failed item data
      */
     public function validationError(ConstraintViolationListInterface $errors, Item $item): void
     {
@@ -52,9 +47,6 @@ class Result
 
     /**
      * Register error for the item.
-     *
-     * @param \Throwable $exception Exception object
-     * @param Item       $item      Failed item data
      */
     public function exceptionError(\Throwable $exception, Item $item): void
     {

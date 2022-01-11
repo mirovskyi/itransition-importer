@@ -16,8 +16,6 @@ class Item
     private ?string $error;
 
     /**
-     * Item constructor.
-     *
      * @param mixed $data
      */
     public function __construct(int $index, $data, ?string $error)

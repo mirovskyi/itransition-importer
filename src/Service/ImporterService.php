@@ -10,7 +10,7 @@ use App\Importer\Result;
 use App\Importer\Writer\DoctrineWriter;
 use App\Importer\Writer\WriterInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Doctrine\PropertyInfo\DoctrineExtractor;
+use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -21,7 +21,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ImporterService
 {
-    //Importer context options
+    /**
+     * Importer context options.
+     */
     public const OPTION_VALIDATION_GROUPS = 'groups';
 
     private EntityManagerInterface $entityManager;
@@ -30,9 +32,6 @@ class ImporterService
 
     private ImporterReaderLocator $readerLocator;
 
-    /**
-     * ImporterService constructor.
-     */
     public function __construct(EntityManagerInterface $entityManager, ValidatorInterface $validator, ImporterReaderLocator $readerLocator)
     {
         $this->entityManager = $entityManager;
@@ -79,7 +78,7 @@ class ImporterService
         if (!$denormalizer) {
             $denormalizer = new Serializer([
                 new DateTimeNormalizer(),
-                new ObjectNormalizer(null, null, null, new DoctrineExtractor($this->entityManager)),
+                new ObjectNormalizer(null, null, null, new PhpDocExtractor()),
             ]);
         }
 
@@ -101,16 +100,7 @@ class ImporterService
     }
 
     /**
-     * Process next item from reader.
-     * Transforms data to entity object, validates and tries to write entity data.
-     *
-     * @param Item                                                  $item         Item data
-     * @param string                                                $type         Entity class name
-     * @param DenormalizerInterface                                 $denormalizer Denormalizer interface implementation
-     * @param WriterInterface                                       $writer       Importer writer interface implementation
-     * @param Result                                                $result       Importer result object
-     * @param string|null                                           $format       Original data format (imported from what format)
-     * @param string|GroupSequence|array<string|GroupSequence>|null $groups       Validation groups
+     * @param string|GroupSequence|array<string|GroupSequence>|null $groups
      *
      * @throws \App\Importer\Writer\WriterException
      * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface

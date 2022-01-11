@@ -6,14 +6,8 @@ namespace App\Importer\Reader;
 
 abstract class FileReader extends AbstractReader
 {
-    /**
-     * Loaded file SPL object.
-     */
     private \SplFileObject $splFileObject;
 
-    /**
-     * {@inheritDoc}
-     */
     public function load($source): void
     {
         if ($source instanceof \SplFileObject) {
@@ -33,9 +27,6 @@ abstract class FileReader extends AbstractReader
         }
     }
 
-    /**
-     * Get SPL file object.
-     */
     protected function getFile(): \SplFileObject
     {
         return $this->splFileObject;

@@ -17,7 +17,6 @@ class DiscontinuedDenormalizer implements DenormalizerInterface
      * Denormalize string 'yes' to current DateTime object.
      *
      * {@inheritDoc}
-     *
      * @param array<mixed> $context
      *
      * @return mixed
@@ -37,12 +36,7 @@ class DiscontinuedDenormalizer implements DenormalizerInterface
         return $dateTimeNormalizer->denormalize($data, $type, $format, $context);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return bool
-     */
-    public function supportsDenormalization($data, string $type, string $format = null)
+    public function supportsDenormalization($data, string $type, string $format = null): bool
     {
         return isset(self::SUPPORTED_TYPES[$type]);
     }

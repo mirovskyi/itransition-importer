@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Importer\Writer;
 
+use App\Model\EntityDTOInterface;
 use Doctrine\Persistence\ObjectManager;
 
 class DoctrineWriter implements WriterInterface
@@ -17,9 +18,6 @@ class DoctrineWriter implements WriterInterface
         $this->entityManagement = $entityManager;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function configure(array $options): void
     {
         if (isset($options[WriterInterface::OPTION_TEST_MODE])) {
@@ -27,19 +25,17 @@ class DoctrineWriter implements WriterInterface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function write(object $item): void
     {
         if (!$this->testMode) {
-            $this->entityManagement->persist($item);
+            if ($item instanceof EntityDTOInterface) {
+                $this->entityManagement->persist($item->createEntity());
+            } else {
+                $this->entityManagement->persist($item);
+            }
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function finish(): void
     {
         if (!$this->testMode) {

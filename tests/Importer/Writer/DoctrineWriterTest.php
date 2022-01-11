@@ -7,6 +7,7 @@ namespace App\Tests\Importer\Writer;
 use App\Entity\Product;
 use App\Importer\Writer\DoctrineWriter;
 use App\Importer\Writer\WriterInterface;
+use App\Model\ProductDTO;
 use Doctrine\Persistence\ObjectManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -27,8 +28,10 @@ class DoctrineWriterTest extends TestCase
             ->method('flush');
 
         $writer = new DoctrineWriter($em);
-        $writer->write(new Product());
-        $writer->write(new Product());
+        $productDTO = new ProductDTO();
+        $productDTO->code = $productDTO->name = $productDTO->description = 'Test';
+        $writer->write($productDTO);
+        $writer->write(new Product('test', 'Test', 'Test'));
         $writer->finish();
     }
 
@@ -47,7 +50,7 @@ class DoctrineWriterTest extends TestCase
 
         $writer = new DoctrineWriter($em);
         $writer->configure([WriterInterface::OPTION_TEST_MODE => true]);
-        $writer->write(new Product());
+        $writer->write(new Product('test', 'Test', 'Test'));
         $writer->finish();
     }
 

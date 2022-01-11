@@ -1,21 +1,20 @@
 <?php
 
-declare(strict_types=1);
+namespace App\Tests\Model;
 
-namespace App\Entity;
-
+use App\Model\ProductDTO;
 use PHPUnit\Framework\TestCase;
 
-class ProductTest extends TestCase
+class ProductDTOTest extends TestCase
 {
     /**
      * Check validation rules when cost < 5 and stock < 10.
      */
     public function testIsCostAndStockNotValidWhenLess(): void
     {
-        $product = new Product();
-        $product->setCost(3);
-        $product->setStock(5);
+        $product = new ProductDTO();
+        $product->cost = 3;
+        $product->stock = 5;
         $this->assertTrue($product->isCostAndStockNotValid());
     }
 
@@ -24,9 +23,9 @@ class ProductTest extends TestCase
      */
     public function testIsCostAndStockNotValidWhenEqual(): void
     {
-        $product = new Product();
-        $product->setCost(5);
-        $product->setStock(10);
+        $product = new ProductDTO();
+        $product->cost = 5;
+        $product->stock = 10;
         $this->assertFalse($product->isCostAndStockNotValid());
     }
 
@@ -35,9 +34,9 @@ class ProductTest extends TestCase
      */
     public function testIsCostAndStockNotValidWhenGreater(): void
     {
-        $product = new Product();
-        $product->setCost(123);
-        $product->setStock(21);
+        $product = new ProductDTO();
+        $product->cost = 123;
+        $product->stock = 21;
         $this->assertFalse($product->isCostAndStockNotValid());
     }
 
@@ -46,9 +45,9 @@ class ProductTest extends TestCase
      */
     public function testIsCostAndStockNotValidWhenCostLessAndStockGreater(): void
     {
-        $product = new Product();
-        $product->setCost(3);
-        $product->setStock(12);
+        $product = new ProductDTO();
+        $product->cost = 3;
+        $product->stock = 12;
         $this->assertFalse($product->isCostAndStockNotValid());
     }
 
@@ -57,9 +56,20 @@ class ProductTest extends TestCase
      */
     public function testIsCostAndStockNotValidWhenCostGreaterAndStockLess(): void
     {
-        $product = new Product();
-        $product->setCost(23);
-        $product->setStock(7);
+        $product = new ProductDTO();
+        $product->cost = 23;
+        $product->stock = 7;
         $this->assertFalse($product->isCostAndStockNotValid());
+    }
+
+    /**
+     * Check implementation of EntityDTOInterface.
+     * Should create Product entity.
+     */
+    public function testCreatingEntity(): void
+    {
+        $product = new ProductDTO();
+        $product->code = $product->name = $product->description = 'Test';
+        $this->assertInstanceOf(\App\Entity\Product::class, $product->createEntity());
     }
 }
