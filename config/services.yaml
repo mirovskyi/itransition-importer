@@ -20,6 +20,16 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
+            - '../src/Importer/'
+            - '../src/Service/ImporterReaderLocator.php'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    
+    #Importer readers
+    App\Importer\Reader\CsvReader:
+        tags:
+            - {name: 'app.importer.reader', key: 'csv'}
+    
+    App\Service\ImporterReaderLocator:
+        arguments: [!tagged_locator {tag: 'app.importer.reader', index_by: 'key', default_index_method: 'getFormat'}]
