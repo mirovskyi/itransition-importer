@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ImporterService
 {
     //Importer context options
-    const OPTION_VALIDATION_GROUPS = 'groups';
+    public const OPTION_VALIDATION_GROUPS = 'groups';
 
     private EntityManagerInterface $entityManager;
 

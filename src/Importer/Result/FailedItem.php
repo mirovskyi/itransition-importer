@@ -11,8 +11,8 @@ class FailedItem
     /**
      * Error types.
      */
-    const PROCESS_ERROR = 0;
-    const VALIDATION_ERROR = 1;
+    public const PROCESS_ERROR = 0;
+    public const VALIDATION_ERROR = 1;
 
     /**
      * Failed item data.

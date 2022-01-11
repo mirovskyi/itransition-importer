@@ -35,9 +35,9 @@ interface ReaderInterface
      * Iterate throw loaded data items.
      *
      * @return \Traversable<int, Item>
-     *                           Returns list of Item objects.
-     *                           The idea is to use Generator that yields row by row.
-     *                           This can avoid keeping big array of data in the memory.
+     *                                 Returns list of Item objects.
+     *                                 The idea is to use Generator that yields row by row.
+     *                                 This can avoid keeping big array of data in the memory.
      */
     public function read(): \Traversable;
 }
